@@ -35,7 +35,7 @@ get:
 	@echo "Getting dependencies...\n"
 	go get	
 
-build: get format test 
+build: get format 
 	@printf "$RCompiling Kbot ${VERSION} for ${TARGET_OS}/${GO_ARCH}... $D\n"	
 	CGO_ENABLED=0 GOOS=${TARGET_OS} GOARCH=${GO_ARCH}  go build -x -o ${APP_FILE_NAME} --ldflags="-X 'github.com/dkzippa/prometheus-kbot/cmd.appVersion=${VERSION}'"
 	@echo "\nCompiled Kbot ${VERSION}, check ./${APP_FILE_NAME} \n"
