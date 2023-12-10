@@ -13,6 +13,10 @@ GO_ARCH := $(shell uname -m)
 ifeq (${GO_ARCH},aarch64)
 	GO_ARCH = arm64
 endif
+ifeq (${GO_ARCH},x86_64)
+	GO_ARCH = amd64
+endif
+
 
 DOCKER_IMG_NAME = ${REGISTRY}/${APP}:${VERSION}-${TARGET_OS}
 
