@@ -32,3 +32,19 @@
 - `export TELE_TOKEN`
 - go to [t.me/dkzippa_bot](https://t.me/dkzippa_bot) and test
 
+
+# Build in Docker image for different platforms
+- add Makefile
+	- build app for diff platforms: linux, macos, windows, arm
+	- add clean, format for the kbot app
+	- add docker image building
+
+- add Dockerfile
+	- use multistage build
+	- create image from goland and build the app with `make <platform>`
+	- create image from scratch and run kbot app in it(copy from dev image)
+- add .dockerignore
+- commit, push git codebase
+- don't forget to add tags
+- push image to registry(dockerhub login)
+- test all on other stages

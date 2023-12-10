@@ -3,7 +3,7 @@
 
 APP_FILE_NAME := kbot
 APP=$(shell basename $(shell git remote get-url origin))
-REGISTRY=dkzippa
+REGISTRY=europe-docker.pkg.dev/prometheus-407701/prometheus-kbot
 
 BUILD_INFO := $(shell git rev-parse --short HEAD)
 VERSION := $(shell git describe --tags --abbrev | head -n 1)-${BUILD_INFO}
