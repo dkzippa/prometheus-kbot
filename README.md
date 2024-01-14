@@ -48,3 +48,18 @@
 - don't forget to add tags
 - push image to registry(dockerhub login)
 - test all on other stages
+
+
+
+# RUN in docker or kubernetes
+- change `ENTRYPOINT ["./kbot"]` to `ENTRYPOINT ["./kbot", "prometheusKbot"]` to have it running
+- pass `TELE_TOKEN` as env
+- commit, push
+- add version tag like `v1.0.5`, push tags
+- test image in docker 
+	- `docker run -ti dkzippa/prometheus-kbot:v1.0.5-50482dd-amd64`
+	- `docker run -ti -e TELE_TOKEN=... dkzippa/prometheus-kbot:v1.0.5-50482dd-amd64`
+- test image in deployment 
+	- `k create deploy kbot-test --image dkzippa/prometheus-kbot:v1.0.5-50482dd-amd64`
+	
+
