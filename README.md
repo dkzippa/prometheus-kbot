@@ -105,5 +105,5 @@
 
 # update version to v1.0.7 with tag to test deployment
 - `MSG="version v1.0.7 fix" && git add --all && git commit -m $MSG && git push -u origin develop`
-- `git tag v.1.0.7 && git push --tags `
+- `git tag v.1.0.7 && git push --tags`
 
