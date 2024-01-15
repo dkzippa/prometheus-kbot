@@ -6,6 +6,7 @@ image:
   repository: "dkzippa"
   tag: "v1.0.7-64ccdac"
   arch: amd64
+  os: linux
 secret:
   env: "TELE_TOKEN"
   name: "kbot"
