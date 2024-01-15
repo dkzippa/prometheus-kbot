@@ -1,0 +1,29 @@
+name: KBOT-CICD
+
+on:
+  push:
+    branches:
+      - develop
+
+env:
+  REGISTRY: ghcr.io
+  APP: ${{ github.repository }}
+  TARGETARCH: amd64
+  TARGETOS: linux
+
+jobs:
+  ci:
+    name: CI
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: make-test
+        run: make test

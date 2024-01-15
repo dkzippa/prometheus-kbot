@@ -9,7 +9,7 @@ APP=$(shell basename -s .git $(shell git remote get-url origin))
 REGISTRY=dkzippa
 
 BUILD_INFO := $(shell git rev-parse --short HEAD)
-VERSION := $(shell git describe --tags --abbrev | head -n 1)-${BUILD_INFO}
+VERSION := $(shell git describe --tags --abbrev=0 | head -n 1)-${BUILD_INFO}
 
 TARGET_OS := linux
 
@@ -81,8 +81,7 @@ windows:
 arm:
 	$(MAKE) build TARGET_OS=linux TARGET_ARCH=arm64
 
-image:
-	# docker buildx build --platform linux/386,linux/amd64,linux/arm64 -t ${DOCKER_IMG_NAME} --build-arg TARGET_OS=${TARGET_OS} --push .	
+image:	
 	@echo "docker build -t ${DOCKER_IMG_NAME} --build-arg TARGET_OS=${TARGET_OS} ."
 	docker build -t ${DOCKER_IMG_NAME} --build-arg TARGET_OS=${TARGET_OS} .
 

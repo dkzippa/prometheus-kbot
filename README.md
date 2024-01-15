@@ -87,3 +87,17 @@
 		- `k get deploy && k delete "deployment.apps/$(k get deploy -o jsonpath='{.items[0].metadata.name}')"`
 
 
+# use github pipeline
+
+- test ghcr.io/dkzippa			
+	- create personal token with permissions for packages operations
+	- `CR_PAT=... && echo $CR_PAT | docker login ghcr.io -u USERNAME --password-stdin`	
+	- `make image push REGISTRY=ghcr.io/dkzippa APP=prometheus-kbot`
+	- `docker inspect ghcr.io/dkzippa/prometheus-kbot:v1.0.6-2eea280-arm64`
+	- `docker run -e TELE_TOKEN=... -ti ghcr.io/dkzippa/prometheus-kbot:v1.0.6-2eea280-arm64`
+
+- add github worflows and actions
+	- 
+
+
+
