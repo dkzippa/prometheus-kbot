@@ -4,7 +4,7 @@
 replicaCount: 1
 image:
   repository: "dkzippa"
-  tag: "v1.0.7-64ccdac"
+  tag: "v1.0.8-f6b2778"
   arch: amd64
   os: linux
 secret:
