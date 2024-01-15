@@ -4,7 +4,7 @@
 replicaCount: 1
 image:
   repository: "dkzippa"
-  tag: "v1.0.6-e524a06"
+  tag: "v1.0.6-7045c1a"
   arch: amd64
 secret:
   env: "TELE_TOKEN"
