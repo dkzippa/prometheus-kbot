@@ -101,7 +101,8 @@
 		- `VERSION=$(git describe --tags --abbrev=0)-$(git rev-parse --short HEAD) && echo $VERSION`
 		- `export TEST_VERSION2=$(git describe --tags --abbrev=0)-$(git rev-parse --short HEAD) && echo $TEST_VERSION2 && yq -i '.image.tag=strenv(TEST_VERSION2)' ./helm/values.yaml`
 	- commit and push with tags 
-		- `MSG="github ci/cd implemented" && git add --all && github commit -m $MSG && git tag v.1.0.7 -m $MSG && git push && git push --tags`
+		- `MSG="github ci/cd implemented" && git add --all && git commit -m $MSG && git push`
+		- `MSG="github ci/cd implemented" && git add --all && git commit -m $MSG && git tag v.1.0.7 -m $MSG && git push && git push --tags`
 
 
 
