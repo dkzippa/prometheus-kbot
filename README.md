@@ -57,9 +57,33 @@
 - commit, push
 - add version tag like `v1.0.5`, push tags
 - test image in docker 
-	- `docker run -ti dkzippa/prometheus-kbot:v1.0.5-50482dd-amd64`
-	- `docker run -ti -e TELE_TOKEN=... dkzippa/prometheus-kbot:v1.0.5-50482dd-amd64`
+	- `docker run -ti dkzippa/prometheus-kbot:v1.0.6-ca17012-amd64`
+	- `docker run -ti -e TELE_TOKEN=... dkzippa/prometheus-kbot:v1.0.6-ca17012-amd64`
 - test image in deployment 
-	- `k create deploy kbot-test --image dkzippa/prometheus-kbot:v1.0.5-50482dd-amd64`
+	- `k create deploy kbot-test --image dkzippa/prometheus-kbot:v1.0.6-ca17012-amd64`
 	
+
+# ADD HELM
+- helm create helm
+- change Chart.yaml `name` to app name `prometheus-kbot`
+- test deploy by helm `helm template prometheus-kbot ./helm -s templates/deployment.yaml | k apply -f -`
+- commit, push
+- set tag, push tags `git push --tags`
+- `helm package ./helm`
+- `gh release create`
+- `gh release list`
+- `gh release upload v1.0.6 prometheus-kbot-0.0.6.tgz`
+- `helm install prometheus-kbot https://github.com/dkzippa/prometheus-kbot/releases/download/v1.0.6/prometheus-kbot-0.0.6.tgz`
+
+- helper commands:
+	- work with secret: 
+		- `k create secret generic kbot --from-literal=token=...` # converts to base64 automatically
+		- to recheck: `echo -n "..." | base64`
+		- see if it is correct: `k get secrets kbot -o yaml`
+		- `k delete secret/kbot`
+	- check logs of 1st pod: 
+		- `k get po && POD="pod/$(k get po -o jsonpath='{.items[0].metadata.name}')" && k describe $POD && k logs $POD -f`		
+	- delete 1st deploy:
+		- `k get deploy && k delete "deployment.apps/$(k get deploy -o jsonpath='{.items[0].metadata.name}')"`
+
 
