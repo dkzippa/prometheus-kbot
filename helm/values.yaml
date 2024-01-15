@@ -3,10 +3,11 @@
 # Declare variables to be passed into your templates.
 replicaCount: 1
 image:
-  repository: "dkzippa"
+  registry: "ghcr.io"
+  repository: "dkzippa/prometheus-kbot"
   tag: "v1.0.7-64ccdac"
-  arch: amd64
   os: linux
+  arch: amd64
 secret:
   env: "TELE_TOKEN"
   name: "kbot"
