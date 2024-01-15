@@ -1,15 +1,13 @@
 name: KBOT-CICD
 
+env:
+  REGISTRY: ghcr.io
+  APP: "prometheus-kbot"
+
 on:
   push:
     branches:
       - develop
-
-env:
-  REGISTRY: ghcr.io
-  APP: ${{ github.repository }}
-  TARGETARCH: amd64
-  TARGETOS: linux
 
 jobs:
   ci:
@@ -27,3 +25,21 @@ jobs:
 
       - name: make-test
         run: make test
+
+      - name: ghcr-login
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: make-build-push
+        env:
+          REGISTRY: ${{ env.REGISTRY }}
+          APP: ${{ env.APP }}
+          TARGETARCH: amd64
+          TARGETOS: linux
+        run: make image push REGISTRY=${{env.REGISTRY}}/${{ github.actor }} APP=${{ env.APP }}
+
+      - name: make-clean
+        run: make clean
