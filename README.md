@@ -90,7 +90,7 @@
 # use github pipeline
 
 - test ghcr.io/dkzippa			
-	- create personal token with permissions for packages operations
+	- create personal token with permissions for packages operations(read, write) and repo(write) to push changes later
 	- `CR_PAT=... && echo $CR_PAT | docker login ghcr.io -u USERNAME --password-stdin`	
 	- `make image push REGISTRY=ghcr.io/dkzippa APP=prometheus-kbot`
 	- `docker inspect ghcr.io/dkzippa/prometheus-kbot:v1.0.6-2eea280-arm64`
@@ -102,7 +102,7 @@
 		- `export TEST_VERSION2=$(git describe --tags --abbrev=0)-$(git rev-parse --short HEAD) && echo $TEST_VERSION2 && yq -i '.image.tag=strenv(TEST_VERSION2)' ./helm/values.yaml`
 	- commit and push with tags 
 		- `MSG="github ci/cd implemented" && git add --all && git commit -m $MSG && git push`
-		- `MSG="github ci/cd implemented" && git add --all && git commit -m $MSG && git tag v.1.0.7 -m $MSG && git push && git push --tags`
+		- `MSG="github ci/cd implemented" && git add --all && git commit -m $MSG && git tag v.1.0.7 -m $MSG && git push && git push --tags` 
 
 
 
