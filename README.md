@@ -87,3 +87,23 @@
 		- `k get deploy && k delete "deployment.apps/$(k get deploy -o jsonpath='{.items[0].metadata.name}')"`
 
 
+# use github pipeline
+
+- test ghcr.io/dkzippa			
+	- create personal token with permissions for packages operations(read, write) and repo(write) to push changes later
+	- `CR_PAT=... && echo $CR_PAT | docker login ghcr.io -u USERNAME --password-stdin`	
+	- `make image push REGISTRY=ghcr.io/dkzippa APP=prometheus-kbot`
+	- `docker inspect ghcr.io/dkzippa/prometheus-kbot:v1.0.6-2eea280-arm64`
+	- `docker run -e TELE_TOKEN=... -ti ghcr.io/dkzippa/prometheus-kbot:v1.0.6-2eea280-arm64`
+
+- add github worflows and actions
+	- test updating version
+		- `VERSION=$(git describe --tags --abbrev=0)-$(git rev-parse --short HEAD) && echo $VERSION`
+		- `export TEST_VERSION2=$(git describe --tags --abbrev=0)-$(git rev-parse --short HEAD) && echo $TEST_VERSION2 && yq -i '.image.tag=strenv(TEST_VERSION2)' ./helm/values.yaml`
+	- commit and push with tags 
+		- `MSG="github ci/cd implemented" && git add --all && git commit -m $MSG && git push -u origin develop`
+
+# update version to v1.0.7 with tag to test deployment
+- `MSG="version v1.0.7 fix" && git add --all && git commit -m $MSG && git push -u origin develop`
+- `git tag v.1.0.7 && git push --tags`
+
