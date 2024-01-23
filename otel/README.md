@@ -69,13 +69,11 @@ My plan:
 
 
 - As for distributed tracing:
-	if Kbot go app:
+	- if Kbot go app:
 		- add tracing to go app with already used lib
-			"go.opentelemetry.io/otel/exporters/stdout/stdouttrace"
-			"go.opentelemetry.io/otel/sdk/trace"
-
+			- "go.opentelemetry.io/otel/exporters/stdout/stdouttrace"
+			- "go.opentelemetry.io/otel/sdk/trace"
 		- create spans, create and send traceIds with trace.NewTracerProvider and traceExporter
-
 		- when for example we receive payload from telegram API
 
 	- implement passing traceID with labels/tags in otel collector, Fluent Bit, Loki, Prometheus and Grafana with Tempo
