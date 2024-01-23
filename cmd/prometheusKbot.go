@@ -69,11 +69,11 @@ func sendMetrics(ctx context.Context, payload string) {
 	if len(MetricsHost) <= 0 {
 		return
 	}
-	// Get the global MeterProvider and create a new Meter with the name "kbot_light_signal_counter"
-	meter := otel.GetMeterProvider().Meter("kbot_light_signal_counter")
+	//  Get the global MeterProvider and create a new Meter
+	meter := otel.GetMeterProvider().Meter("kbot_commands")
 
-	// Get or create an Int64Counter instrument with the name "kbot_light_signal_<payload>"
-	counter, _ := meter.Int64Counter(fmt.Sprintf("kbot_light_signal_%s", payload))
+	// Get or create an Int64Counter instrument
+	counter, _ := meter.Int64Counter(fmt.Sprintf("kbot_command_%s", payload))
 
 	// Add a value of 1 to the Int64Counter
 	counter.Add(ctx, 1)
