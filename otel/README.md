@@ -8,6 +8,7 @@ I but want to do it with helm to adapt it later for Flux.
 The hardest part for me is to make correct configs and labels/tags in configs for Kubernetes.
 So I am in the process now.
 
+![Stack video](_assets/otel.gif)
 
 My plan:
 
