@@ -49,9 +49,9 @@ jobs:
     name: CD
     runs-on: ubuntu-latest
     
-    # permissions:
-      # contents: read
-  
+    permissions:
+      id-token: 'write'
+      
     # needs:
     #   - ci
 
