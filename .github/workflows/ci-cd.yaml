@@ -29,9 +29,13 @@ jobs:
       with:
         fetch-depth: 0
 
+    - name: base64_TELE_TOKEN
+      run: TELE_TOKEN=$(echo -n "${{env.TELE_TOKEN}}" | base64 )
+
     - uses: mikefarah/yq@master
       with:
-        cmd: TELE_TOKEN=$(echo -n "${{env.TELE_TOKEN}}" | base64 ) && yq -v -i ".data.token=\"${TELE_TOKEN}\"" secret.yaml && cat secret.yaml
+        # cmd: yq -v -i ".data.token=\"${TELE_TOKEN}\"" secret.yaml && cat secret.yaml
+        cmd: yq -i -v '.data.token=\"strenv(TELE_TOKEN)\"' ./helm/templates/secret.yaml
 
     - name: check_teletoken
       run: cat ./helm/templates/secret.yaml
