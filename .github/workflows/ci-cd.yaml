@@ -88,15 +88,15 @@ jobs:
       - name: check_teletoken
         run: cat ./helm/templates/secret.yaml
 
-      # - id: gcp-auth
-      #   uses: 'google-github-actions/auth@v2'
-      #   name: gcpauth
-      #   with:
-      #     project_id: 'prometheus-407701'
-      #     create_credentials_file: 'true'
-      #     workload_identity_provider: "projects/92496117895/locations/global/workloadIdentityPools/prometheus-kbot-github/providers/prometheus-kbot-github-provider2"
-      #     service_account: "kustomize-controller@prometheus-407701.iam.gserviceaccount.com"
-      #     export_environment_variables: 'false'
+      - id: gcp-auth
+        uses: 'google-github-actions/auth@v2'
+        name: gcpauth
+        with:
+          project_id: 'prometheus-407701'
+          create_credentials_file: 'true'
+          workload_identity_provider: "projects/92496117895/locations/global/workloadIdentityPools/prometheus-kbot-github/providers/prometheus-kbot-github-provider2"
+          service_account: "kustomize-controller@prometheus-407701.iam.gserviceaccount.com"
+          export_environment_variables: 'false'
       
       # - name: github_login 
       #   run: |-
