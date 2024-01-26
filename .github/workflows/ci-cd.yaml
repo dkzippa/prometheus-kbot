@@ -13,106 +13,39 @@ on:
 
 jobs:
 
-  ci:
-    name: CI
-    runs-on: ubuntu-latest
-    # permissions:
-    #   contents: read
-    #   packages: write
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: make-test
-        run: make test
-
-      - name: ghcr-login
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
-
-      - name: make-build-push
-        env:
-          REGISTRY: ${{ env.REGISTRY }}
-          APP: ${{ env.APP }}
-          TARGETARCH: amd64
-          TARGETOS: linux
-        run: make image push REGISTRY=${{env.REGISTRY}}/${{ github.actor }} APP=${{ env.APP }}
-
-      - name: make-clean
-        run: make clean
-
-
-  # encrypt_secrets:
-  #   name: entrypt-secrets-with-gcp-kms-sops
+  # ci:
+  #   name: CI
   #   runs-on: ubuntu-latest
-
-
-  #   needs:
-  #     - ci
-
-  #   permissions:
-  #     contents: 'read'
-  #     packages: write
-  #     id-token: 'write'
+  #   # permissions:
+  #   #   contents: read
+  #   #   packages: write
 
   #   steps:
-    
-  #   - uses: 'actions/checkout@v4'            
-  #     with:
-  #       # ref: ${{ github.ref }}      
-  #       fetch-depth: 0
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
 
-  #   - name: create_TELE_TOKEN_BASE64
-  #     env:
-  #       TELE_TOKEN: ${{ secrets.TELE_TOKEN }}
-  #     run: |-
-  #       echo $TELE_TOKEN
-  #       echo "TELE_TOKEN_BASE64=$(echo $TELE_TOKEN | base64 )" >> $GITHUB_ENV;        
-  #       echo $TELE_TOKEN_BASE64
+  #     - name: make-test
+  #       run: make test
 
-  #   - uses: mikefarah/yq@master
-  #     with:
-  #       cmd: yq -i -v '.data.token=$TELE_TOKEN_BASE64' ./helm/templates/secret.yaml
+  #     - name: ghcr-login
+  #       uses: docker/login-action@v3
+  #       with:
+  #         registry: ${{ env.REGISTRY }}
+  #         username: ${{ github.actor }}
+  #         password: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
 
-  #   - name: check_teletoken
-  #     run: cat ./helm/templates/secret.yaml
+  #     - name: make-build-push
+  #       env:
+  #         REGISTRY: ${{ env.REGISTRY }}
+  #         APP: ${{ env.APP }}
+  #         TARGETARCH: amd64
+  #         TARGETOS: linux
+  #       run: make image push REGISTRY=${{env.REGISTRY}}/${{ github.actor }} APP=${{ env.APP }}
 
-  #   - id: gcp-auth
-  #     uses: 'google-github-actions/auth@v2'
-  #     name: gcpauth
-  #     with:
-  #       project_id: 'prometheus-407701'
-  #       create_credentials_file: 'true'
-  #       workload_identity_provider: "projects/92496117895/locations/global/workloadIdentityPools/prometheus-kbot-github/providers/prometheus-kbot-github-provider2"
-  #       service_account: "kustomize-controller@prometheus-407701.iam.gserviceaccount.com"
-  #       export_environment_variables: 'true'
-      
-  #   - id: 'gcloud'
-  #     name: 'gcloud'
-  #     run: |-
-  #       gcloud auth login --brief --cred-file="${{ steps.gcp-auth.outputs.credentials_file_path }}"
-
-  #   - uses: nhedger/setup-sops@v2
-  #   - name: SOPS
-  #     run: sops -e -gcp-kms projects/prometheus-407701/locations/global/keyRings/kbot-sops-flux/cryptoKeys/kbot-sops-key-flux --encrypted-regex '^(token)$' ./helm/templates/secret.yaml > ./helm/templates/secret-enc.yaml
-
-  #   - name: check_teletoken_secret.yaml
-  #     run: rm ./helm/templates/secret.yaml
-
-  #   - name: cat_secret-enc.yaml
-  #     run: cat ./helm/templates/secret-enc.yaml
-      
-  #   - run: |
-  #       git config user.name github-actions
-  #       git config user.email github-actions@github.com
-  #       git commit -am "auto-encrypt helm secret.yaml with SOPS "
-  #       git push
+  #     - name: make-clean
+  #       run: make clean
 
 
   cd:
@@ -124,8 +57,8 @@ jobs:
       packages: write
       id-token: 'write'
       
-    needs:
-      - ci
+    # needs:
+    #   - ci
       
     steps:
       - uses: actions/checkout@v4
