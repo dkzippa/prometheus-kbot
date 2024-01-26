@@ -52,6 +52,10 @@ jobs:
     name: entrypt-secrets-with-gcp-kms-sops
     runs-on: ubuntu-latest
 
+
+    needs:
+      - ci
+
     permissions:
       contents: 'read'
       packages: write
@@ -115,8 +119,8 @@ jobs:
     runs-on: ubuntu-latest
 
     needs:
-      - ci
-
+      - encrypt_secrets
+      
     steps:
       - uses: actions/checkout@v4
         with:
