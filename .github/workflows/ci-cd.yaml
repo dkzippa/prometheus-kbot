@@ -103,7 +103,10 @@ jobs:
         run: |-
           gcloud auth login --brief --cred-file="${{ steps.gcp-auth.outputs.credentials_file_path }}"
 
-      
+      - uses: nhedger/setup-sops@v2
+      - name: SOPS
+        run: sops -e -gcp-kms projects/prometheus-407701/locations/global/keyRings/kbot-sops-flux/cryptoKeys/kbot-sops-key-flux --encrypted-regex '^(token)$' ./helm/templates/secret.yaml > ./helm/templates/secret-enc.yaml
+          
       - name: push new helm version
         env:
           GH_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
