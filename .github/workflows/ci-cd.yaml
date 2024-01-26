@@ -104,7 +104,7 @@ jobs:
           # echo "GITHUB_TOKEN1: ${{ secrets.GITHUB_TOKEN }}"
           # echo "GITHUB_TOKEN2: $GITHUB_TOKEN"
           # echo "GITHUB_TOKEN3: ${GITHUB_TOKEN}"
-          gh auth login --with-token="${ GH_TOKEN }" 
+          gh auth login --with-token=$GH_TOKEN 
           
         
       - run: |
