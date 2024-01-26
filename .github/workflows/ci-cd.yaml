@@ -96,14 +96,15 @@ jobs:
       
       - name: github_login 
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }} 
+          # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |-
           echo "GH_TOKEN1: $GH_TOKEN"
-          echo "GH_TOKEN2: ${GH_TOKEN}"
-          echo "GITHUB_TOKEN1: ${{ secrets.GITHUB_TOKEN }}"
-          echo "GITHUB_TOKEN2: $GITHUB_TOKEN"
-          echo "GITHUB_TOKEN3: ${GITHUB_TOKEN}"
+          echo "GH_TOKEN2: ${{ GH_TOKEN }}"
+          echo "PERSONAL_GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}"
+          # echo "GITHUB_TOKEN1: ${{ secrets.GITHUB_TOKEN }}"
+          # echo "GITHUB_TOKEN2: $GITHUB_TOKEN"
+          # echo "GITHUB_TOKEN3: ${GITHUB_TOKEN}"
           gh auth login --with-token="${ GITHUB_TOKEN }" 
           
         
