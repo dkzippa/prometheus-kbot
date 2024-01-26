@@ -92,6 +92,9 @@ jobs:
       #     service_account: "kustomize-controller@prometheus-407701.iam.gserviceaccount.com"
       #     export_environment_variables: 'false'
       
+      - name: github_login 
+        run: gh auth login
+        
       - run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
