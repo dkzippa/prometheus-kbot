@@ -98,15 +98,12 @@ jobs:
           service_account: "kustomize-controller@prometheus-407701.iam.gserviceaccount.com"
           export_environment_variables: 'false'
       
-      # - name: github_login 
-      #   run: |-
-      #     echo "GH_TOKEN1: $GH_TOKEN"          
-      #     echo "PERSONAL_GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}"
-      #     # echo "GITHUB_TOKEN1: ${{ secrets.GITHUB_TOKEN }}"
-      #     # echo "GITHUB_TOKEN2: $GITHUB_TOKEN"
-      #     # echo "GITHUB_TOKEN3: ${GITHUB_TOKEN}"
-      #     gh auth login --with-token="true"
-          
+      - id: 'gcloud'
+        name: 'gcloud'
+        run: |-
+          gcloud auth login --brief --cred-file="${{ steps.gcp-auth.outputs.credentials_file_path }}"
+
+      
       - name: push new helm version
         env:
           GH_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
