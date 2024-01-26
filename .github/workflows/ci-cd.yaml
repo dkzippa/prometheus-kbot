@@ -48,9 +48,13 @@ jobs:
   cd:
     name: CD
     runs-on: ubuntu-latest
-
+    
+    # permissions:
+      # contents: read
+  
     # needs:
     #   - ci
+
 
     steps:
       - uses: actions/checkout@v4
@@ -61,6 +65,22 @@ jobs:
       - uses: mikefarah/yq@master
         with:
           cmd: yq -i '.image.tag=strenv(VERSION)' ./helm/values.yaml
+
+
+      - name: create_TELE_TOKEN_BASE64
+        env:
+          TELE_TOKEN: ${{ secrets.TELE_TOKEN }}
+        run: |-
+          echo $TELE_TOKEN
+          echo "TELE_TOKEN_BASE64=$(echo $TELE_TOKEN | base64 )" >> $GITHUB_ENV;        
+          echo $TELE_TOKEN_BASE64
+  
+      - uses: mikefarah/yq@master
+        with:
+          cmd: yq -i -v '.data.token=$TELE_TOKEN_BASE64' ./helm/templates/secret.yaml
+  
+      - name: check_teletoken
+        run: cat ./helm/templates/secret.yaml
 
       - run: |
           git config user.name github-actions
