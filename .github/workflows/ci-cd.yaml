@@ -61,7 +61,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0          
-          token: ${{ secrets.GH_TOKEN }}
+          token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
       - run: echo "VERSION=$(git describe --tags --abbrev=0)-$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
       - uses: mikefarah/yq@master
@@ -71,7 +71,7 @@ jobs:
 
       - name: create_TELE_TOKEN_BASE64
         env:
-          TELE_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+          TELE_TOKEN: ${{ secrets.TELE_TOKEN }}
         run: |-
           echo $TELE_TOKEN
           echo "TELE_TOKEN_BASE64=$(echo $TELE_TOKEN | base64 )" >> $GITHUB_ENV;        
