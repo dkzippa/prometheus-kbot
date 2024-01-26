@@ -5,7 +5,7 @@ replicaCount: 1
 image:
   registry: "ghcr.io"
   repository: "dkzippa/prometheus-kbot"
-  tag: "v1.0.10-a961101"
+  tag: "v1.0.10-514688b"
   os: linux
   arch: amd64
 secret:
