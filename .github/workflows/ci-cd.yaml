@@ -99,7 +99,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |-
-          gh auth login
+          gh auth login --with-token=${{ secrets.GITHUB_TOKEN }} 
           echo "GH LOGIN"
         
       - run: |
