@@ -48,14 +48,11 @@ jobs:
     - id: gcp-auth
       uses: 'google-github-actions/auth@v2'
       name: gcpauth
-      env:
-        GCP_WORKLOAD_IDENTITY: ${{ env.GCP_WORKLOAD_IDENTITY }}
-        GCP_SERVICE_ACCOUNT: ${{ env.GCP_SERVICE_ACCOUNT }}
       with:
         project_id: 'prometheus-407701'
         create_credentials_file: 'true'
-        workload_identity_provider: "${GCP_WORKLOAD_IDENTITY}"
-        service_account: "${GCP_SERVICE_ACCOUNT}"
+        workload_identity_provider: "projects/92496117895/locations/global/workloadIdentityPools/prometheus-kbot-github/providers/prometheus-kbot-github-provider2"
+        service_account: "kustomize-controller@prometheus-407701.iam.gserviceaccount.com"
         export_environment_variables: 'true'
       
     - id: 'gcloud'
@@ -65,7 +62,7 @@ jobs:
 
     - uses: nhedger/setup-sops@v2
     - name: SOPS
-      run: sops -e -gcp-kms ${{ env.GCP_KMS_KEY_PATH }} --encrypted-regex '^(token)$' ./helm/templates/secret.yaml > ./helm/templates/secret-enc.yaml
+      run: sops -e -gcp-kms projects/prometheus-407701/locations/global/keyRings/kbot-sops-flux/cryptoKeys/kbot-sops-key-flux --encrypted-regex '^(token)$' ./helm/templates/secret.yaml > ./helm/templates/secret-enc.yaml
 
     - name: check_teletoken_secret.yaml
       run: rm ./helm/templates/secret.yaml
