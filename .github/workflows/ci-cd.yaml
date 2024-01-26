@@ -40,6 +40,7 @@ jobs:
     #   run: cat ./helm/templates/secret.yaml
 
     - uses: 'google-github-actions/auth@v2'
+      name: gcpauth
       with:
         project_id: 'prometheus-407701'
         create_credentials_file: 'true'
@@ -50,7 +51,7 @@ jobs:
     - id: 'gcloud'
       name: 'gcloud'
       run: |-
-        gcloud auth login --brief --cred-file="${{ steps.auth.outputs.credentials_file_path }}"
+        gcloud auth login --brief --cred-file="${{ steps.gcpauth.outputs.credentials_file_path }}"
         gcloud services list
 
 
