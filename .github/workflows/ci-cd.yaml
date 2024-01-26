@@ -47,7 +47,7 @@ jobs:
         create_credentials_file: 'true'
         workload_identity_provider: 'projects/92496117895/locations/global/workloadIdentityPools/prometheus-kbot-github/providers/prometheus-kbot-github-provider2'
         service_account: 'kustomize-controller@prometheus-407701.iam.gserviceaccount.com'
-        export_environment_variables: true
+        export_environment_variables: 'true'
 
     - name: 'Set up Cloud SDK'
       uses: 'google-github-actions/setup-gcloud@v2'
@@ -56,20 +56,18 @@ jobs:
       name: 'gcloud'
       run: |-
         gcloud auth login --brief --cred-file="${{ steps.gcp-auth.outputs.credentials_file_path }}"
-        gcloud services list
+        # gcloud services list
 
 
+    - uses: nhedger/setup-sops@v2
+    - name: SOPS
+      run: sops -e -gcp-kms projects/prometheus-407701/locations/global/keyRings/kbot-sops-flux/cryptoKeys/kbot-sops-key-flux --encrypted-regex '^(token)$' ./helm/templates/secret.yaml > ./helm/templates/secret-enc.yaml
 
-    # - uses: nhedger/setup-sops@v2
-    # - name: SOPS
-    #   run: sops -e -gcp-kms projects/prometheus-407701/locations/global/keyRings/kbot-sops-flux/cryptoKeys/kbot-sops-key-flux --encrypted-regex '^(token)$' ./helm/templates/secret.yaml > ./helm/templates/secret-enc.yaml
-
-    # - name: check_teletoken
+    # - name: check_teletoken_secret.yaml
     #   run: rm ./helm/templates/secret.yaml
 
-    # - name: push
-    #   run: cat ./helm/templates/secret-enc.yaml
-
+    - name: cat_secret-enc.yaml
+      run: cat ./helm/templates/secret-enc.yaml
 
 
 
