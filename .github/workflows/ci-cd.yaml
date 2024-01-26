@@ -102,7 +102,11 @@ jobs:
               
       - uses: nhedger/setup-sops@v2
       - name: sops
-        run: sops -e -gcp-kms projects/prometheus-407701/locations/global/keyRings/kbot-sops-flux/cryptoKeys/kbot-sops-key-flux --encrypted-regex '^(token)$' ./helm/templates/secret.yaml > ./helm/templates/secret-enc.yaml
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.gcp-auth.outputs.credentials_file_path }}
+        run: |-
+          # export GOOGLE_APPLICATION_CREDENTIALS="$GOOGLE_APPLICATION_CREDENTIALS"
+          sops -e -gcp-kms projects/prometheus-407701/locations/global/keyRings/kbot-sops-flux/cryptoKeys/kbot-sops-key-flux --encrypted-regex '^(token)$' ./helm/templates/secret.yaml > ./helm/templates/secret-enc.yaml
   
       - run: |
           rm ./helm/templates/secret.yaml
