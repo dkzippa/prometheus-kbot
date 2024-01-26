@@ -35,7 +35,7 @@ jobs:
     - uses: mikefarah/yq@master
       with:
         # cmd: yq -v -i ".data.token=\"${TELE_TOKEN}\"" secret.yaml && cat secret.yaml
-        cmd: yq -i -v '.data.token=\"strenv(TELE_TOKEN)\"' ./helm/templates/secret.yaml
+        cmd: yq -i -v '.data.token=strenv(TELE_TOKEN)' ./helm/templates/secret.yaml
 
     - name: check_teletoken
       run: cat ./helm/templates/secret.yaml
