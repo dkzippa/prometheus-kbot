@@ -12,7 +12,9 @@ on:
 
 
 jobs:
-  gcp_auth:
+
+  encrypt_secret_TELE_TOKEN:
+
     name: gcp-auth-with-workload-federation
     runs-on: ubuntu-latest
 
@@ -27,6 +29,14 @@ jobs:
       with:
         fetch-depth: 0
 
+    - uses: mikefarah/yq@master
+      with:
+        cmd: TELE_TOKEN=$(echo -n "${{env.TELE_TOKEN}}" | base64 ) && yq -v -i ".data.token=\"${TELE_TOKEN}\"" secret.yaml && cat secret.yaml
+
+    - name: check_teletoken
+      run: cat ./helm/templates/secret.yaml
+
+
     - uses: 'google-github-actions/auth@v2'
       with:
         project_id: 'prometheus-407701'
@@ -35,11 +45,22 @@ jobs:
         service_account: 'kustomize-controller@prometheus-407701.iam.gserviceaccount.com'
         export_environment_variables: true
 
-    - id: 'gcloud'
-      name: 'gcloud'
-      run: |-
-        gcloud auth login --brief --cred-file="${{ steps.auth.outputs.credentials_file_path }}"
-        gcloud services list
+    - uses: nhedger/setup-sops@v2
+    - name: SOPS
+      run: sops -e -gcp-kms projects/prometheus-407701/locations/global/keyRings/kbot-sops-flux/cryptoKeys/kbot-sops-key-flux --encrypted-regex '^(token)$' ./helm/templates/secret.yaml > ./helm/templates/secret-enc.yaml
+
+    - name: check_teletoken
+      run: rm ./helm/templates/secret.yaml
+
+    - name: push
+      run: cat ./helm/templates/secret-enc.yaml
+
+    # - id: 'gcloud'
+    #   name: 'gcloud'
+    #   run: |-
+    #     gcloud auth login --brief --cred-file="${{ steps.auth.outputs.credentials_file_path }}"
+    #     gcloud services list
+
 
 
   # ci:
@@ -98,3 +119,6 @@ jobs:
   #         git config user.email github-actions@github.com
   #         git commit -am "bump version in helm values to $VERSION"
   #         git push
+
+
+
