@@ -48,11 +48,14 @@ jobs:
     - id: gcp-auth
       uses: 'google-github-actions/auth@v2'
       name: gcpauth
+      env:
+        GCP_WORKLOAD_IDENTITY: ${{ env.GCP_WORKLOAD_IDENTITY }}
+        GCP_SERVICE_ACCOUNT: ${{ env.GCP_SERVICE_ACCOUNT }}
       with:
         project_id: 'prometheus-407701'
         create_credentials_file: 'true'
-        workload_identity_provider: "${{ env.GCP_WORKLOAD_IDENTITY }}"
-        service_account: "${{ env.GCP_SERVICE_ACCOUNT }}"
+        workload_identity_provider: "${GCP_WORKLOAD_IDENTITY}"
+        service_account: "${GCP_SERVICE_ACCOUNT}"
         export_environment_variables: 'true'
       
     - id: 'gcloud'
