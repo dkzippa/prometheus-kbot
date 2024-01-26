@@ -29,12 +29,21 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: base64_TELE_TOKEN
-      run: TELE_TOKEN=$(echo -n "${{env.TELE_TOKEN}}" | base64 )
+
+    - name: check_TELE_TOKEN
+      run: echo ${{ secrets.TELE_TOKEN }}
+
+    - name: create_TELE_TOKEN_BASE64
+      env:
+        TELE_TOKEN: ${{ secrets.TELE_TOKEN }}
+      run: echo "TELE_TOKEN_BASE64=$(echo $TELE_TOKEN | base64 )" >> $GITHUB_ENV;        
+
+    - name: check_TELE_TOKEN_BASE64
+      run: echo $TELE_TOKEN_BASE64
 
     - uses: mikefarah/yq@master
       with:
-        cmd: yq -i -v '.data.token=strenv(TELE_TOKEN)' ./helm/templates/secret.yaml
+        cmd: yq -i -v '.data.token=$TELE_TOKEN_BASE64' ./helm/templates/secret.yaml
 
     - name: check_teletoken
       run: cat ./helm/templates/secret.yaml
@@ -56,7 +65,7 @@ jobs:
       name: 'gcloud'
       run: |-
         gcloud auth login --brief --cred-file="${{ steps.gcp-auth.outputs.credentials_file_path }}"
-        gcloud kms keys list --location=global --keyring=kbot-sops-flux
+        # gcloud kms keys list --location=global --keyring=kbot-sops-flux
         # gcloud services list
 
 
