@@ -8,6 +8,7 @@ on:
   push:
     branches:
       - develop
+      - develop-sops2
 
 jobs:
   ci:
