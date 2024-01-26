@@ -39,7 +39,8 @@ jobs:
     # - name: check_teletoken
     #   run: cat ./helm/templates/secret.yaml
 
-    - uses: 'google-github-actions/auth@v2'
+    - id: gcp-auth
+      uses: 'google-github-actions/auth@v2'
       name: gcpauth
       with:
         project_id: 'prometheus-407701'
@@ -48,10 +49,13 @@ jobs:
         service_account: 'kustomize-controller@prometheus-407701.iam.gserviceaccount.com'
         export_environment_variables: true
 
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v2'
+      
     - id: 'gcloud'
       name: 'gcloud'
       run: |-
-        gcloud auth login --brief --cred-file="${{ steps.gcpauth.outputs.credentials_file_path }}"
+        gcloud auth login --brief --cred-file="${{ steps.gcp-auth.outputs.credentials_file_path }}"
         gcloud services list
 
 
