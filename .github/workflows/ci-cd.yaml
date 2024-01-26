@@ -30,16 +30,13 @@ jobs:
         fetch-depth: 0
 
 
-    - name: check_TELE_TOKEN
-      run: echo ${{ secrets.TELE_TOKEN }}
-
     - name: create_TELE_TOKEN_BASE64
       env:
         TELE_TOKEN: ${{ secrets.TELE_TOKEN }}
-      run: echo "TELE_TOKEN_BASE64=$(echo $TELE_TOKEN | base64 )" >> $GITHUB_ENV;        
-
-    - name: check_TELE_TOKEN_BASE64
-      run: echo $TELE_TOKEN_BASE64
+      run: |-
+        echo $TELE_TOKEN
+        echo "TELE_TOKEN_BASE64=$(echo $TELE_TOKEN | base64 )" >> $GITHUB_ENV;        
+        echo $TELE_TOKEN_BASE64
 
     - uses: mikefarah/yq@master
       with:
@@ -54,27 +51,21 @@ jobs:
       with:
         project_id: 'prometheus-407701'
         create_credentials_file: 'true'
-        workload_identity_provider: 'projects/92496117895/locations/global/workloadIdentityPools/prometheus-kbot-github/providers/prometheus-kbot-github-provider2'
-        service_account: 'kustomize-controller@prometheus-407701.iam.gserviceaccount.com'
+        workload_identity_provider: "${{ env.GCP_WORKLOAD_IDENTITY }}"
+        service_account: "${{ env.GCP_SERVICE_ACCOUNT }}"
         export_environment_variables: 'true'
-
-    # - name: 'Set up Cloud SDK'
-    #   uses: 'google-github-actions/setup-gcloud@v2'
       
     - id: 'gcloud'
       name: 'gcloud'
       run: |-
         gcloud auth login --brief --cred-file="${{ steps.gcp-auth.outputs.credentials_file_path }}"
-        # gcloud kms keys list --location=global --keyring=kbot-sops-flux
-        # gcloud services list
-
 
     - uses: nhedger/setup-sops@v2
     - name: SOPS
-      run: sops -e -gcp-kms projects/prometheus-407701/locations/global/keyRings/kbot-sops-flux/cryptoKeys/kbot-sops-key-flux --encrypted-regex '^(token)$' ./helm/templates/secret.yaml > ./helm/templates/secret-enc.yaml
+      run: sops -e -gcp-kms ${{ env.GCP_KMS_KEY_PATH }} --encrypted-regex '^(token)$' ./helm/templates/secret.yaml > ./helm/templates/secret-enc.yaml
 
-    # - name: check_teletoken_secret.yaml
-    #   run: rm ./helm/templates/secret.yaml
+    - name: check_teletoken_secret.yaml
+      run: rm ./helm/templates/secret.yaml
 
     - name: cat_secret-enc.yaml
       run: cat ./helm/templates/secret-enc.yaml
