@@ -53,8 +53,8 @@ jobs:
     permissions:
       id-token: 'write'
       
-    # needs:
-    #   - ci
+    needs:
+      - ci
     
     env:
       GH_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }} 
