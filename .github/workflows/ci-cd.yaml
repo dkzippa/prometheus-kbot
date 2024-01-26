@@ -96,7 +96,8 @@ jobs:
       
       - name: github_login 
         env:
-          GH_TOKEN: ${{ github.token }} 
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |-
           gh auth login
           echo "GH LOGIN"
