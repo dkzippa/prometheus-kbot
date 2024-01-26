@@ -95,7 +95,9 @@ jobs:
       #     export_environment_variables: 'false'
       
       - name: github_login 
-        run: gh auth login
+        run: |-
+          gh auth login
+          echo "GH LOGIN"
         
       - run: |
           git config user.name github-actions
