@@ -160,13 +160,12 @@ jobs:
           create_credentials_file: 'true'
           workload_identity_provider: "projects/92496117895/locations/global/workloadIdentityPools/prometheus-kbot-github/providers/prometheus-kbot-github-provider2"
           service_account: "kustomize-controller@prometheus-407701.iam.gserviceaccount.com"
-          export_environment_variables: 'true'
+          export_environment_variables: 'false'
         
-      - id: 'gcloud'
-        name: 'gcloud'
-        run: |-
-          gcloud auth login --brief --cred-file="${{ steps.gcp-auth.outputs.credentials_file_path }}"
-  
+      
+      - name: 'gcloud-login'
+        run: gcloud auth login --brief --cred-file="${{ steps.gcp-auth.outputs.credentials_file_path }}"
+        
       - uses: nhedger/setup-sops@v2
       - name: SOPS
         run: sops -e -gcp-kms projects/prometheus-407701/locations/global/keyRings/kbot-sops-flux/cryptoKeys/kbot-sops-key-flux --encrypted-regex '^(token)$' ./helm/templates/secret.yaml > ./helm/templates/secret-enc.yaml
@@ -177,6 +176,10 @@ jobs:
       - name: cat_secret-enc.yaml
         run: cat ./helm/templates/secret-enc.yaml
         
+      - name: gcloud-logout
+        run: gcloud auth revoke --all
+        
+
       - run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
