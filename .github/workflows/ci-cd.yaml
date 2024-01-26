@@ -3,6 +3,7 @@ name: kbot-cicd
 env:
   REGISTRY: ghcr.io
   APP: "prometheus-kbot"    
+  GH_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }} 
 
 on:
   push:
@@ -54,7 +55,9 @@ jobs:
       
     # needs:
     #   - ci
-
+    
+    env:
+      GH_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }} 
 
     steps:
       - uses: actions/checkout@v4
@@ -94,17 +97,14 @@ jobs:
       #     service_account: "kustomize-controller@prometheus-407701.iam.gserviceaccount.com"
       #     export_environment_variables: 'false'
       
-      - name: github_login 
-        env:
-          GH_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }} 
-          # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |-
-          echo "GH_TOKEN1: $GH_TOKEN"          
-          echo "PERSONAL_GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}"
-          # echo "GITHUB_TOKEN1: ${{ secrets.GITHUB_TOKEN }}"
-          # echo "GITHUB_TOKEN2: $GITHUB_TOKEN"
-          # echo "GITHUB_TOKEN3: ${GITHUB_TOKEN}"
-          gh auth login --with-token="true"
+      # - name: github_login 
+      #   run: |-
+      #     echo "GH_TOKEN1: $GH_TOKEN"          
+      #     echo "PERSONAL_GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}"
+      #     # echo "GITHUB_TOKEN1: ${{ secrets.GITHUB_TOKEN }}"
+      #     # echo "GITHUB_TOKEN2: $GITHUB_TOKEN"
+      #     # echo "GITHUB_TOKEN3: ${GITHUB_TOKEN}"
+      #     gh auth login --with-token="true"
           
         
       - run: |
