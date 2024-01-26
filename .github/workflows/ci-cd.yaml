@@ -25,19 +25,19 @@ jobs:
 
     steps:
 
-    # - uses: 'actions/checkout@v4'
-    #   with:
-    #     fetch-depth: 0
+    - uses: 'actions/checkout@v4'
+      with:
+        fetch-depth: 0
 
-    # - name: base64_TELE_TOKEN
-    #   run: TELE_TOKEN=$(echo -n "${{env.TELE_TOKEN}}" | base64 )
+    - name: base64_TELE_TOKEN
+      run: TELE_TOKEN=$(echo -n "${{env.TELE_TOKEN}}" | base64 )
 
-    # - uses: mikefarah/yq@master
-    #   with:
-    #     cmd: yq -i -v '.data.token=strenv(TELE_TOKEN)' ./helm/templates/secret.yaml
+    - uses: mikefarah/yq@master
+      with:
+        cmd: yq -i -v '.data.token=strenv(TELE_TOKEN)' ./helm/templates/secret.yaml
 
-    # - name: check_teletoken
-    #   run: cat ./helm/templates/secret.yaml
+    - name: check_teletoken
+      run: cat ./helm/templates/secret.yaml
 
     - id: gcp-auth
       uses: 'google-github-actions/auth@v2'
@@ -49,8 +49,8 @@ jobs:
         service_account: 'kustomize-controller@prometheus-407701.iam.gserviceaccount.com'
         export_environment_variables: 'true'
 
-    - name: 'Set up Cloud SDK'
-      uses: 'google-github-actions/setup-gcloud@v2'
+    # - name: 'Set up Cloud SDK'
+    #   uses: 'google-github-actions/setup-gcloud@v2'
       
     - id: 'gcloud'
       name: 'gcloud'
