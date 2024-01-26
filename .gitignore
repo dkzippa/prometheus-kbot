@@ -23,4 +23,8 @@ go.work
 .idea/
 kbot
 
+*-creds-*.json
+*creds-*.json
+
+
 
