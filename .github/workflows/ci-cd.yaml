@@ -128,6 +128,6 @@ jobs:
           git status
           git add --all
           git status
-          git commit m "bump version in helm values to $VERSION"
+          git commit -m "bump version in helm values to $VERSION"
           git status
           git push
