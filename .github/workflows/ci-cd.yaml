@@ -73,21 +73,6 @@ jobs:
           cmd: yq -i '.image.tag=strenv(VERSION)' ./helm/values.yaml
 
 
-      - name: create_TELE_TOKEN_BASE64
-        env:
-          TELE_TOKEN: ${{ secrets.TELE_TOKEN }}
-        run: |-
-          echo $TELE_TOKEN
-          echo "TELE_TOKEN_BASE64=$(echo $TELE_TOKEN | base64 )" >> $GITHUB_ENV;        
-          echo $TELE_TOKEN_BASE64
-  
-      - uses: mikefarah/yq@master
-        with:
-          cmd: yq -i -v '.data.token=$TELE_TOKEN_BASE64' ./helm/templates/secret.yaml
-  
-      - name: check_teletoken
-        run: cat ./helm/templates/secret.yaml
-
       - id: gcp-auth
         uses: 'google-github-actions/auth@v2'
         name: gcpauth
@@ -97,31 +82,63 @@ jobs:
           workload_identity_provider: "projects/92496117895/locations/global/workloadIdentityPools/prometheus-kbot-github/providers/prometheus-kbot-github-provider2"
           service_account: "kustomize-controller@prometheus-407701.iam.gserviceaccount.com"
           export_environment_variables: 'false'
-      
-      - id: 'gcp_secrets'
+
+        
+      - id: 'gcloud_auth'
+        name: 'gcloud_auth'
+        env: 
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.gcp-auth.outputs.credentials_file_path }}
+        run: |-
+          gcloud auth login --brief --cred-file="${{ steps.gcp-auth.outputs.credentials_file_path }}"          
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_APPLICATION_CREDENTIALS" >> $GITHUB_ENV
+          # for debug only
+          echo "GOOGLE_APPLICATION_CREDENTIALS: $GOOGLE_APPLICATION_CREDENTIALS"          
+
+
+      # # way 1) use github secrets
+      # - name: create_TELE_TOKEN_BASE64
+      #   env:
+      #     TELE_TOKEN: ${{ secrets.TELE_TOKEN }}
+      #   run: |-          
+      #     echo "TELE_TOKEN_BASE64=$(echo $TELE_TOKEN | base64 )" >> $GITHUB_ENV;        
+      #     # echo $TELE_TOKEN_BASE64
+
+
+      # way 2
+      - id: 'gcp_secret'
         env: 
           GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.gcp-auth.outputs.credentials_file_path }}      
         uses: 'google-github-actions/get-secretmanager-secrets@v2'
         with:
           secrets: |-
             token:projects/92496117895/secrets/KBOT_TELE_TOKEN
-    
-      - name: test_gcp_secret
+
+  
+      # # for debug only
+      # - name: test_gcp_secret
+      #   env:
+      #     GCP_TELE_TOKEN: '${{ steps.gcp_secrets.outputs.token }}'
+      #   run: |-
+      #     echo "GCP_TELE_TOKEN: $GCP_TELE_TOKEN"      
+      
+      # use gcp secrets 
+      - name: create_TELE_TOKEN_BASE64
         env:
-          GCP_TELE_TOKEN: '${{ steps.gcp_secrets.outputs.token }}'
-        run: |-
-          echo "GCP_TELE_TOKEN: $GCP_TELE_TOKEN"        
+          TELE_TOKEN: ${{ steps.gcp_secrets.outputs.token }}
+        run: |-          
+          echo "TELE_TOKEN_BASE64=$(echo $TELE_TOKEN | base64 )" >> $GITHUB_ENV;        
+          # echo $TELE_TOKEN_BASE64
+
+  
+      - uses: mikefarah/yq@master
+        with:
+          cmd: yq -i -v '.data.token=$TELE_TOKEN_BASE64' ./helm/templates/secret.yaml
+
+      # for debug only
+      - name: check_teletoken
+        run: cat ./helm/templates/secret.yaml
 
         
-      - id: 'gcloud'
-        name: 'gcloud'
-        env: 
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.gcp-auth.outputs.credentials_file_path }}
-        run: |-
-          gcloud auth login --brief --cred-file="${{ steps.gcp-auth.outputs.credentials_file_path }}"
-          export GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_APPLICATION_CREDENTIALS
-          echo "GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_APPLICATION_CREDENTIALS" >> $GITHUB_ENV
-          echo "GOOGLE_APPLICATION_CREDENTIALS: $GOOGLE_APPLICATION_CREDENTIALS"          
 
       - uses: nhedger/setup-sops@v2
       - name: SOPS
