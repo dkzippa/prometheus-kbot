@@ -99,6 +99,8 @@ jobs:
           export_environment_variables: 'false'
       
       - id: 'gcp_secrets'
+        env: 
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.gcp-auth.outputs.credentials_file_path }}      
         uses: 'google-github-actions/get-secretmanager-secrets@v2'
         with:
           secrets: |-
