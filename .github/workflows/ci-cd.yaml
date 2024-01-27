@@ -109,8 +109,8 @@ jobs:
       - name: test_gcp_secret
         env:
           GCP_TELE_TOKEN: '${{ steps.gcp_secrets.outputs.token }}'
-        run: |
-          run: echo "GCP_TELE_TOKEN: $GCP_TELE_TOKEN"        
+        run: |-
+          echo "GCP_TELE_TOKEN: $GCP_TELE_TOKEN"        
 
         
       - id: 'gcloud'
