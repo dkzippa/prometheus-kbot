@@ -1,0 +1,48 @@
+# service:
+#   type: ClusterIP
+#   port: 2020
+#   loadBalancerClass:
+#   loadBalancerSourceRanges: []
+#   labels: {}
+#   # nodePort: 30020
+#   # clusterIP: 172.16.10.1
+#   annotations: {}
+
+config:
+  services: |
+    [SERVICE]
+        flush 1
+        log_level error
+
+  outputs: |
+    [OUTPUT]
+        Name                 opentelemetry
+        Host                 otel-collector
+        Port                 3030
+        metrics_uri          /v1/metrics
+        logs_uri             /v1/logs
+        traces_uri           /v1/traces
+        Log_response_payload True
+        tls                  off
+        tls.verify           off
+        # add user-defined labels
+        add_label            app fluent-bit
+        add_label            color blue
+
+
+
+  # outputs: |
+  #   [OUTPUT]
+  #       Name                 opentelemetry
+  #       Match                source.docker.*
+  #       Host                 collector
+  #       Port                 3030
+  #       metrics_uri          /v1/metrics
+  #       logs_uri             /v1/logs
+  #       traces_uri           /v1/traces
+  #       Log_response_payload True
+  #       tls                  off
+  #       tls.verify           off
+  #       # add user-defined labels
+  #       add_label            app fluent-bit
+  #       add_label            color blue

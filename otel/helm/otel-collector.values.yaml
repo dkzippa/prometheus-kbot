@@ -1,0 +1,66 @@
+mode: daemonset
+
+presets:
+  # enables the k8sattributesprocessor and adds it to the traces, metrics, and logs pipelines
+  kubernetesAttributes:
+    enabled: true
+  # enables the kubeletstatsreceiver and adds it to the metrics pipelines
+  kubeletMetrics:
+    enabled: true
+  # Enables the filelogreceiver and adds it to the logs pipelines
+  logsCollection:
+    enabled: true
+
+# logsEngine: <fluentd|otel>
+
+config:
+
+  receivers:
+    otlp:
+      protocols:
+        grpc: #0.0.0.0:4317
+        http:
+          endpoint: "0.0.0.0:3030"
+
+  exporters:
+    debug:
+      verbosity: detailed
+      sampling_initial: 5
+      sampling_thereafter: 200
+    loki:
+      endpoint: "http://loki:3100/loki/api/v1/push"
+      tls:
+        insecure: true
+        # default_labels_enabled:
+        #   exporter: true
+        #   job: true
+    prometheus:
+      endpoint: "0.0.0.0:8889"
+      enable_open_metrics: true
+    otlp/spanmetrics:
+      endpoint: "0.0.0.0:55677"
+      # tls:
+      #   insecure: true
+      tls:
+        insecure: true
+        insecure_skip_verify: true
+    ## for grafana tempo
+    otlp:
+      tls:
+        insecure: true
+        insecure_skip_verify: true
+      endpoint: tempo:443
+
+  service:
+    pipelines:
+      logs:
+        receivers: [otlp]
+        # exporters: [loki]
+      traces:
+        receivers: [otlp]
+        # exporters: [debug, otlp]
+        exporters: [otlp/spanmetrics, debug, otlp]
+      metrics:
+        receivers: [otlp]
+        exporters: [debug, prometheus]
+
